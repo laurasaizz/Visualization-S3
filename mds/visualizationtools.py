@@ -34,7 +34,7 @@ def plot_interpolation_2d(x, y, point_idxs, cmap='viridis'):
             y_interp = np.interp(x_interp.real, x_group.real, y_group.real)
             
             # Plot the interpolated line with the same color as the group
-            plt.plot(x_interp, y_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=1 + len(unique_idxs) - sorted_groups.index(group))
+            plt.plot(x_interp, y_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=7-group)
     
     plt.xlabel("X")
     plt.ylabel("Y")
@@ -85,13 +85,13 @@ def plot_interpolation_3d(x, y, z, point_idxs, cmap='viridis'):
             z_interp = np.interp(x_interp.real, x_group.real, z_group.real)
             
             # Plot the interpolated line with the same color as the group
-            ax.plot(x_interp, y_interp, z_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=1 + len(unique_idxs) - sorted_groups.index(group))
+            ax.plot(x_interp, y_interp, z_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=2)
     
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
     ax.set_title("3D Geodesics via MDS and grouped interpolations")
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=6)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{timestamp}.png"
     plt.savefig(filename)
@@ -122,6 +122,6 @@ def compress_to_sphere(target_dim, *coords):
     scaled_points = points / max_distance * 2
     
     # Normalize all points to lie on the sphere
-    compressed_points = scaled_points / np.linalg.norm(scaled_points, axis=1, keepdims=True)
+    compressed_points = points / np.linalg.norm(points, axis=1, keepdims=True)
     
     return tuple(compressed_points[:, i] for i in range(target_dim))
