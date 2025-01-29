@@ -34,7 +34,7 @@ def plot_interpolation_2d(x, y, point_idxs, cmap='viridis'):
             y_interp = np.interp(x_interp.real, x_group.real, y_group.real)
             
             # Plot the interpolated line with the same color as the group
-            plt.plot(x_interp, y_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=7-group)
+            plt.plot(x_interp, y_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=1)
     
     plt.xlabel("X")
     plt.ylabel("Y")
