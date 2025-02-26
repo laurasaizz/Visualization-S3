@@ -39,7 +39,7 @@ def plot_interpolation_2d(x, y, point_idxs, cmap='viridis'):
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title("Geodesics via MDS and grouped interpolations")
-    plt.legend(fontsize=8)
+    plt.legend(fontsize=8).remove()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{timestamp}.png"
     plt.savefig(filename)
@@ -85,13 +85,14 @@ def plot_interpolation_3d(x, y, z, point_idxs, cmap='viridis'):
             z_interp = np.interp(x_interp.real, x_group.real, z_group.real)
             
             # Plot the interpolated line with the same color as the group
-            ax.plot(x_interp, y_interp, z_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=2)
+            ax.plot(x_interp, y_interp, z_interp, color=colormap(norm(group)), label=f"Geodesic {group}", linewidth=0.5)
     
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("Z")
     ax.set_title("3D Geodesics via MDS and grouped interpolations")
-    ax.legend(fontsize=6)
+    ax.legend(fontsize=6).remove()
+    ax.set_axis_off()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{timestamp}.png"
     plt.savefig(filename)
@@ -125,3 +126,20 @@ def compress_to_sphere(target_dim, *coords):
     compressed_points = points / np.linalg.norm(points, axis=1, keepdims=True)
     
     return tuple(compressed_points[:, i] for i in range(target_dim))
+
+def add_axis_cube(axis, side_len, shift=[0,0,0], colour='#00000020'):
+    """
+    Draw cube with side length(s) side_len centered on [0,0,0] into axis.
+
+    Parameters
+        axis: axis to draw cube into
+        side_len: Scalar or np.ndarray of shape (3,)
+            Specifies the side length in all or each of the axes
+        shift: Shift the center of the cube by this vector
+        colour: Colour of the cube drawn
+    """
+    vertices = np.array([[-1,-1,-1], [1,-1,-1], [1,1,-1], [-1,1,-1], [-1,-1,1], [1,-1,1], [1,1,1], [-1,1,1]])/2*side_len + shift
+    # indices of vertices to connect for edges
+    edges = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]]
+    for edge in edges:
+        axis.plot(vertices[edge, 0], vertices[edge, 1], vertices[edge, 2], colour)
