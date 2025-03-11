@@ -59,12 +59,12 @@ def distance(p, q):
     p, q = align_to_north_pole(p, q)
     return np.abs(np.arccos(q[0]+1j*q[1]))
 
-def build_squared_distance_matrix(points, distance):
+def build_squared_distance_matrix(points, distance, **kwargs):
     """Build the matrix of squared distances from the arrray of points."""
     mat = np.zeros((len(points),)*2)
     for i in range(len(points)):
         for j in range(i+1, len(points)):
-            mat[i,j] = distance(points[i], points[j])
+            mat[i,j] = distance(points[i], points[j], **kwargs)
     return (mat + mat.T)**2
 
 def b_matrix(A):
@@ -73,14 +73,15 @@ def b_matrix(A):
     return H@A@H
 
 #run mds algorithm
-def mds(points, dimensions_target, distance=distance):
+def mds(points, dimensions_target, **kwargs):
     """Calculate distances and run MDS scheme on points. Our resulting distance
     matrix B is symmetric.
     Dimension reduction to dimensions target
     New coordinates are returned such that unpacking into separate coordinates is possible, i.e.
       x, y, z, … = mds(…)
     """
-    distances = build_squared_distance_matrix(points, distance)
+    dist = kwargs.pop("distance", distance)
+    distances = build_squared_distance_matrix(points, dist, **kwargs)
     A = -0.5 * distances
     B = b_matrix(A)
     
