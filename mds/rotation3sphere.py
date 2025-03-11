@@ -22,6 +22,13 @@ def hyperspherical_to_cartesian(p):
     z = np.sin(phi1) * np.sin(phi2) * np.sin(phi3)
     return np.array([w, x, y, z])
 
+def spherical_to_cartesian(p):
+    """
+    Convert spherical coordinates (S^2) to cartesian coordinates (R^3).
+    """
+    theta, phi = p
+    return np.sin(theta)*np.cos(phi), np.sin(theta)*np.sin(phi), np.cos(theta)
+
 def align_to_north_pole(p, q):
     """
     Align p to the north pole and adjust q.
