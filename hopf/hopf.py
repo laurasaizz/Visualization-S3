@@ -1,5 +1,7 @@
 import numpy as np
 from mds.rotation3sphere import cartesian_to_hyperspherical
+import itertools as it
+import mds.mds as mds
 
 def hopf_fibration_inverse(points, num_samples, hyperspherical=False):
     """
@@ -38,6 +40,16 @@ def hopf_fibration_inverse(points, num_samples, hyperspherical=False):
         return [ (index, np.array([cartesian_to_hyperspherical(p) for p in sampled_fiber])) for index, sampled_fiber in fibers]
     else:
         return fibers
+
+def hopf_inverse_mds(points, n_samples_fibers, dimensions_target=3, unravel_coords=False, distance=mds.distance):
+    fibers = hopf_fibration_inverse(points, n_samples_fibers)
+    # unravelling sampled fibers into two arrays for indices and coordinates
+    fiber_idxs, points_fibers = zip(*it.chain(*( [ (fiber_idx, point_fiber) for point_fiber in points_fiber ] for fiber_idx, points_fiber in fibers )))
+    if unravel_coords:
+        coords = mds.mds(points_fibers, dimensions_target=dimensions_target, distance=distance)
+    else:
+        coords = list(zip(*mds.mds(points_fibers, dimensions_target=dimensions_target, distance=distance)))
+    return fiber_idxs, coords
 
 def localcoordsampling_2sphere(n):
     """
